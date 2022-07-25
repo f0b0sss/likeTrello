@@ -10,7 +10,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.util.UriComponentsBuilder;
 
 import java.util.List;
 
@@ -61,12 +60,20 @@ public class TaskRestControllerV1 {
     }
 
     @PutMapping(value = "{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Task> updateTask(@RequestBody Task task) {
+    public ResponseEntity<Task> updateTask(@RequestBody Task task, @PathVariable("columnId") Long columnId) {
         HttpHeaders headers = new HttpHeaders();
 
         if (task == null) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
+
+        Columns columns = this.columnService.getById(columnId);
+
+        if (columns == null) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+
+        task.setColumns(columns);
 
         this.taskService.save(task);
 

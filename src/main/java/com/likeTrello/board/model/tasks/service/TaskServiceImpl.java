@@ -2,7 +2,6 @@ package com.likeTrello.board.model.tasks.service;
 
 import com.likeTrello.board.model.tasks.model.Task;
 import com.likeTrello.board.model.tasks.repository.TasksRepository;
-import com.likeTrello.board.model.tasks.service.TaskService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

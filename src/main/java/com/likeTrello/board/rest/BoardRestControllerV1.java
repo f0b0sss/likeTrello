@@ -8,7 +8,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.util.UriComponentsBuilder;
 
 import java.util.List;
 
@@ -20,7 +19,7 @@ public class BoardRestControllerV1 {
     private BoardService boardService;
 
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Board> getBoard(@PathVariable("id") Long id){
+    public ResponseEntity<Board> getBoard(@PathVariable Long id){
         if (id == null){
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
@@ -34,7 +33,7 @@ public class BoardRestControllerV1 {
         return new ResponseEntity<>(board, HttpStatus.OK);
     }
 
-    @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/new", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Board> saveBoard(@RequestBody Board board){
         HttpHeaders headers = new HttpHeaders();
 
@@ -43,11 +42,12 @@ public class BoardRestControllerV1 {
         }
 
         this.boardService.save(board);
+
         return new ResponseEntity<>(board, headers, HttpStatus.CREATED);
     }
 
-    @PutMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Board> updateBoard(@RequestBody Board board, UriComponentsBuilder builder){
+    @PutMapping(value = "{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Board> updateBoard(@RequestBody Board board){
         HttpHeaders headers = new HttpHeaders();
 
         if (board == null){
@@ -59,7 +59,7 @@ public class BoardRestControllerV1 {
     }
 
     @DeleteMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Board> deleteBoard(@PathVariable("id") Long id){
+    public ResponseEntity<Board> deleteBoard(@PathVariable Long id){
         Board board = this.boardService.getById(id);
 
         if (board == null){

@@ -4,12 +4,10 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.likeTrello.board.model.Board;
 import com.likeTrello.board.model.tasks.model.Task;
-import lombok.*;
+import lombok.Data;
 
 import javax.persistence.*;
-import java.io.Serializable;
 import java.util.List;
-import java.util.Objects;
 
 @Entity
 @Table(name = "columns")
@@ -23,8 +21,7 @@ public class Columns {
     private String columnName;
 
     @JsonManagedReference
-    @OneToMany(mappedBy = "columns", fetch = FetchType.EAGER, cascade = CascadeType.ALL,
-            orphanRemoval = true)
+    @OneToMany(mappedBy = "columns", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
     @Column(name =  "column_id" )
     private List<Task> tasks;
 

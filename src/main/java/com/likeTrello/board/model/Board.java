@@ -2,12 +2,10 @@ package com.likeTrello.board.model;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.likeTrello.board.model.colums.model.Columns;
-import lombok.*;
+import lombok.Data;
 
 import javax.persistence.*;
-import java.io.Serializable;
 import java.util.List;
-import java.util.Objects;
 
 @Entity
 @Table(name = "boards")
@@ -22,7 +20,7 @@ public class Board {
     private String boardName;
 
     @JsonManagedReference
-    @OneToMany(mappedBy = "board", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "board", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
     @Column(name = "board_id")
     private List<Columns> columns;
 

@@ -1,26 +1,30 @@
 package com.likeTrello.board.model.colums.rest;
 
+import com.likeTrello.board.model.Board;
 import com.likeTrello.board.model.colums.model.Columns;
 import com.likeTrello.board.model.colums.service.ColumnService;
+import com.likeTrello.board.service.BoardService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.util.UriComponentsBuilder;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/v1/board/{boardId}/columns")
+@RequestMapping("/api/v1/board/{boardId}/column")
 public class ColumnsRestControllerV1 {
 
     @Autowired
     private ColumnService columnService;
 
+    @Autowired
+    private BoardService boardService;
+
     @GetMapping(value = "{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Columns> getColumn(@PathVariable("id") Long id){
+    public ResponseEntity<Columns> getColumn(@PathVariable Long id){
         if (id == null){
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
@@ -34,39 +38,45 @@ public class ColumnsRestControllerV1 {
         return new ResponseEntity<>(column, HttpStatus.OK);
     }
 
-    @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Columns> saveColumn(@RequestBody Columns column){
+    @PostMapping(value = "/new", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Columns> saveColumn(@RequestBody Columns column, @PathVariable Long boardId){
         HttpHeaders headers = new HttpHeaders();
 
         if (column == null){
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 
+        Board board = boardService.getById(boardId);
+
+        if (board == null) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+
+        column.setBoard(board);
+
         this.columnService.save(column);
+
         return new ResponseEntity<>(column, headers, HttpStatus.CREATED);
     }
 
-//    @PutMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-//    public ResponseEntity<Columns> changeColumnOrder(@RequestBody Columns column){
-//        HttpHeaders headers = new HttpHeaders();
-//
-//        if (column == null){
-//            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-//        }
-//
-//        this.columnService.save(column);
-//        return new ResponseEntity<>(column, headers, HttpStatus.OK);
-//    }
-
-    @PutMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Columns> updateColumn(@RequestBody Columns column, UriComponentsBuilder builder){
+    @PutMapping(value = "{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Columns> updateColumn(@RequestBody Columns column, @PathVariable Long boardId){
         HttpHeaders headers = new HttpHeaders();
 
         if (column == null){
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 
+        Board board = this.boardService.getById(boardId);
+
+        if (board == null) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+
+        column.setBoard(board);
+
         this.columnService.save(column);
+
         return new ResponseEntity<>(column, headers, HttpStatus.OK);
     }
 
