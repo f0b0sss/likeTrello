@@ -2,13 +2,11 @@ package com.likeTrello.board.model.tasks.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.likeTrello.board.model.colums.model.Columns;
-import lombok.*;
+import lombok.Data;
 import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
-import java.io.Serializable;
 import java.time.LocalDate;
-import java.util.Objects;
 
 @Entity
 @Table(name = "tasks")
@@ -18,6 +16,9 @@ public class Task {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Column(name = "task_order")
+    private Long taskOrder;
 
     @Column(name = "task_name")
     private String taskName;

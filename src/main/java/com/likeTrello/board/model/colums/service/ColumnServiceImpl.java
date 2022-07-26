@@ -29,7 +29,7 @@ public class ColumnServiceImpl implements ColumnService{
     }
 
     @Override
-    public List<Columns> getAll() {
+    public List<Columns> getAll(Long boardId) {
         return columnsRepository.findAll();
     }
 }

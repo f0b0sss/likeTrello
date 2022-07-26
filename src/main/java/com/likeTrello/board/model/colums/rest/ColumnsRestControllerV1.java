@@ -23,6 +23,17 @@ public class ColumnsRestControllerV1 {
     @Autowired
     private BoardService boardService;
 
+    @RequestMapping(produces = MediaType.APPLICATION_JSON_VALUE, method = RequestMethod.GET)
+    public ResponseEntity<List<Columns>> getAllColumns(@PathVariable Long boardId){
+        List<Columns> columns = this.columnService.getAll(boardId);
+
+        if (columns.isEmpty()){
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+
+        return new ResponseEntity<>(columns, HttpStatus.OK);
+    }
+
     @GetMapping(value = "{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Columns> getColumn(@PathVariable Long id){
         if (id == null){
@@ -92,15 +103,5 @@ public class ColumnsRestControllerV1 {
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
-    @RequestMapping(produces = MediaType.APPLICATION_JSON_VALUE, method = RequestMethod.GET)
-    public ResponseEntity<List<Columns>> getAllColumns(){
-        List<Columns> columns = this.columnService.getAll();
-
-        if (columns.isEmpty()){
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-
-        return new ResponseEntity<>(columns, HttpStatus.OK);
-    }
 
 }

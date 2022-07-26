@@ -18,6 +18,17 @@ public class BoardRestControllerV1 {
     @Autowired
     private BoardService boardService;
 
+    @RequestMapping(produces = MediaType.APPLICATION_JSON_VALUE, method = RequestMethod.GET)
+    public ResponseEntity<List<Board>> getAllBoards(){
+        List<Board> boards = this.boardService.getAll();
+
+        if (boards.isEmpty()){
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+
+        return new ResponseEntity<>(boards, HttpStatus.OK);
+    }
+
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Board> getBoard(@PathVariable Long id){
         if (id == null){
@@ -70,15 +81,5 @@ public class BoardRestControllerV1 {
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
-    @RequestMapping(produces = MediaType.APPLICATION_JSON_VALUE, method = RequestMethod.GET)
-    public ResponseEntity<List<Board>> getAllBoards(){
-        List<Board> boards = this.boardService.getAll();
-
-        if (boards.isEmpty()){
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-
-        return new ResponseEntity<>(boards, HttpStatus.OK);
-    }
 
 }

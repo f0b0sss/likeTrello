@@ -12,5 +12,11 @@ public interface TaskService {
 
     void delete(Long id);
 
-    List<Task> getAll();
+    List<Task> getAll(Long columnId);
+
+    void changeTaskOrder(Task task, Integer index, List<Task> tasks);
+
+    Task getByOrder(Long columnId, Long id);
+
+    Long getMaxOrderValue(Long columnId);
 }

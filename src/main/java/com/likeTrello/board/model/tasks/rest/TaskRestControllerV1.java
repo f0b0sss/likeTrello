@@ -22,6 +22,17 @@ public class TaskRestControllerV1 {
     @Autowired
     private ColumnService columnService;
 
+    @RequestMapping(produces = MediaType.APPLICATION_JSON_VALUE, method = RequestMethod.GET)
+    public ResponseEntity<List<Task>> getAllTasks(@PathVariable("columnId") Long columnId) {
+        List<Task> tasks = this.taskService.getAll(columnId);
+
+        if (tasks.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+
+        return new ResponseEntity<>(tasks, HttpStatus.OK);
+    }
+
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Task> getTask(@PathVariable("id") Long id) {
         if (id == null) {
@@ -54,13 +65,21 @@ public class TaskRestControllerV1 {
 
         task.setColumns(columns);
 
+        Long taskOrderId = this.taskService.getMaxOrderValue(columnId);
+
+        if (taskOrderId == null){
+            task.setTaskOrder(1l);
+        }else {
+            task.setTaskOrder(taskOrderId + 1);
+        }
+
         this.taskService.save(task);
 
         return new ResponseEntity<>(task, headers, HttpStatus.CREATED);
     }
 
     @PutMapping(value = "{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Task> updateTask(@RequestBody Task task, @PathVariable("columnId") Long columnId) {
+    public ResponseEntity<Task> updateTask(@RequestBody Task task, @PathVariable Long columnId) {
         HttpHeaders headers = new HttpHeaders();
 
         if (task == null) {
@@ -80,6 +99,50 @@ public class TaskRestControllerV1 {
         return new ResponseEntity<>(task, headers, HttpStatus.OK);
     }
 
+    @PutMapping(value = "{id}/move/{newColumnId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Task> moveTaskToAnotherColumn(@RequestBody Task task, @PathVariable Long newColumnId) {
+        HttpHeaders headers = new HttpHeaders();
+
+        if (task == null) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+
+        Columns columns = this.columnService.getById(newColumnId);
+
+        if (columns == null) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+
+        task.setColumns(columns);
+
+        task.setTaskOrder(this.taskService.getMaxOrderValue(newColumnId) + 1);
+
+        this.taskService.save(task);
+
+        return new ResponseEntity<>(task, headers, HttpStatus.OK);
+    }
+
+    @PutMapping(value = "{id}/order/{positionId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<List<Task>> changeTaskOrder(@PathVariable("id") Long id,
+                                                @PathVariable("positionId") Integer positionId,
+                                                @PathVariable("columnId") Long columnId) {
+        HttpHeaders headers = new HttpHeaders();
+
+        if (id != Long.valueOf(positionId)){
+            Task task = this.taskService.getByOrder(columnId, id);
+
+            if (task == null) {
+                return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            }
+
+            this.taskService.changeTaskOrder(task, positionId, taskService.getAll(columnId));
+        }
+
+        List<Task> tasks = taskService.getAll(columnId);
+
+        return new ResponseEntity<>(tasks, headers, HttpStatus.OK);
+    }
+
     @DeleteMapping(value = "{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Task> deleteTask(@PathVariable("id") Long id) {
         Task task = this.taskService.getById(id);
@@ -90,17 +153,6 @@ public class TaskRestControllerV1 {
 
         this.taskService.delete(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-    }
-
-    @RequestMapping(produces = MediaType.APPLICATION_JSON_VALUE, method = RequestMethod.GET)
-    public ResponseEntity<List<Task>> getAllTasks() {
-        List<Task> tasks = this.taskService.getAll();
-
-        if (tasks.isEmpty()) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-
-        return new ResponseEntity<>(tasks, HttpStatus.OK);
     }
 
 }

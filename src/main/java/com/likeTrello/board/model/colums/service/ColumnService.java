@@ -12,5 +12,5 @@ public interface ColumnService {
 
     void delete(Long id);
 
-    List<Columns> getAll();
+    List<Columns> getAll(Long boardId);
 }
