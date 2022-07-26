@@ -65,10 +65,10 @@ public class TaskRestControllerV1 {
 
         task.setColumns(columns);
 
-        Long taskOrderId = this.taskService.getMaxOrderValue(columnId);
+        Integer taskOrderId = this.taskService.getMaxOrderValue(columnId);
 
         if (taskOrderId == null){
-            task.setTaskOrder(1l);
+            task.setTaskOrder(1);
         }else {
             task.setTaskOrder(taskOrderId + 1);
         }
@@ -100,7 +100,8 @@ public class TaskRestControllerV1 {
     }
 
     @PutMapping(value = "{id}/move/{newColumnId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Task> moveTaskToAnotherColumn(@RequestBody Task task, @PathVariable Long newColumnId) {
+    public ResponseEntity<Task> moveTaskToAnotherColumn(@RequestBody Task task, @PathVariable Long columnId,
+                                                        @PathVariable Long newColumnId) {
         HttpHeaders headers = new HttpHeaders();
 
         if (task == null) {
@@ -115,27 +116,33 @@ public class TaskRestControllerV1 {
 
         task.setColumns(columns);
 
-        task.setTaskOrder(this.taskService.getMaxOrderValue(newColumnId) + 1);
+        Integer taskOrderId = this.taskService.getMaxOrderValue(columnId);
+
+        if (taskOrderId == null){
+            task.setTaskOrder(1);
+        }else {
+            task.setTaskOrder(taskOrderId + 1);
+        }
 
         this.taskService.save(task);
 
         return new ResponseEntity<>(task, headers, HttpStatus.OK);
     }
 
-    @PutMapping(value = "{id}/order/{positionId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<Task>> changeTaskOrder(@PathVariable("id") Long id,
-                                                @PathVariable("positionId") Integer positionId,
+    @PutMapping(value = "{fromIndex}/order/{toIndex}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<List<Task>> changeTaskOrder(@PathVariable("fromIndex") Integer fromIndex,
+                                                @PathVariable("toIndex") Integer toIndex,
                                                 @PathVariable("columnId") Long columnId) {
         HttpHeaders headers = new HttpHeaders();
 
-        if (id != Long.valueOf(positionId)){
-            Task task = this.taskService.getByOrder(columnId, id);
+        if (fromIndex != toIndex){
+            Task task = this.taskService.getByOrder(columnId, fromIndex);
 
             if (task == null) {
                 return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
             }
 
-            this.taskService.changeTaskOrder(task, positionId, taskService.getAll(columnId));
+            this.taskService.changeTaskOrder(task, fromIndex, toIndex, taskService.getAll(columnId));
         }
 
         List<Task> tasks = taskService.getAll(columnId);

@@ -18,7 +18,7 @@ public class Task {
     private Long id;
 
     @Column(name = "task_order")
-    private Long taskOrder;
+    private Integer taskOrder;
 
     @Column(name = "task_name")
     private String taskName;

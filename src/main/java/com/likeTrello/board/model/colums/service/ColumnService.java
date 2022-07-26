@@ -13,4 +13,10 @@ public interface ColumnService {
     void delete(Long id);
 
     List<Columns> getAll(Long boardId);
+
+    void changeColumnOrder(Columns column, Integer FromIndex, Integer toIndex, List<Columns> columns);
+
+    Columns getByOrder(Long boardId, Integer id);
+
+    Integer getMaxOrderValue(Long boardId);
 }

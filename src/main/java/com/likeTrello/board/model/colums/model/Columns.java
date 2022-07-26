@@ -20,6 +20,9 @@ public class Columns {
     @Column(name = "column_name")
     private String columnName;
 
+    @Column(name = "column_order")
+    private Integer columnOrder;
+
     @JsonManagedReference
     @OneToMany(mappedBy = "columns", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
     @Column(name =  "column_id" )

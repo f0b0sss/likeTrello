@@ -34,14 +34,11 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public void changeTaskOrder(Task task, Integer toIndex, List<Task> tasks) {
-
-        if (task.getTaskOrder() < toIndex) {
+    public void changeTaskOrder(Task task, Integer FromIndex, Integer toIndex, List<Task> tasks) {
+        if (FromIndex < toIndex) {
             moveTaskDown(task, toIndex, tasks);
-        } else if (task.getTaskOrder() > toIndex) {
+        } else {
             moveTaskUp(task, toIndex, tasks);
-        }else {
-            return;
         }
 
         for (Task taskElement : tasks) {
@@ -51,13 +48,13 @@ public class TaskServiceImpl implements TaskService {
     }
 
     private void moveTaskUp(Task task, Integer toIndex, List<Task> tasks) {
-        Long prevOrder = 0l;
-        Long nextOrder = 0l;
+        int prevOrder = 0;
+        int nextOrder = 0;
 
         for (int i = tasks.size() - 1; i >= 0; i--) {
             if (tasks.get(i).getTaskOrder() == task.getTaskOrder()) {
 
-                while (i != toIndex - 1) { //4-1 != 1
+                while (i != toIndex - 1) {
                     prevOrder = nextOrder;
 
                     if (tasks.get(i).getTaskOrder() == task.getTaskOrder()) {
@@ -83,8 +80,8 @@ public class TaskServiceImpl implements TaskService {
     }
 
     private void moveTaskDown(Task task, Integer toIndex, List<Task> tasks) {
-        Long prevOrder = 0l;
-        Long nextOrder = 0l;
+        int prevOrder = 0;
+        int nextOrder = 0;
 
         for (int i = 0; i < tasks.size(); i++) {
             if (tasks.get(i).getTaskOrder() == task.getTaskOrder()) {
@@ -115,13 +112,13 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public Task getByOrder(Long columnId, Long id) {
-        Long orderId = this.tasksRepository.findAll(columnId).get(Math.toIntExact(id - 1)).getTaskOrder();
+    public Task getByOrder(Long columnId, Integer id) {
+        int orderId = this.tasksRepository.findAll(columnId).get(id - 1).getTaskOrder();
         return this.tasksRepository.getByOrder(columnId, orderId);
     }
 
     @Override
-    public Long getMaxOrderValue(Long columnId) {
+    public Integer getMaxOrderValue(Long columnId) {
         return tasksRepository.getMaxOrderValue(columnId);
     }
 }

@@ -65,6 +65,14 @@ public class ColumnsRestControllerV1 {
 
         column.setBoard(board);
 
+        Integer columnOrderId = this.columnService.getMaxOrderValue(boardId);
+
+        if (columnOrderId == null){
+            column.setColumnOrder(1);
+        }else {
+            column.setColumnOrder(columnOrderId + 1);
+        }
+
         this.columnService.save(column);
 
         return new ResponseEntity<>(column, headers, HttpStatus.CREATED);
@@ -89,6 +97,27 @@ public class ColumnsRestControllerV1 {
         this.columnService.save(column);
 
         return new ResponseEntity<>(column, headers, HttpStatus.OK);
+    }
+
+    @PutMapping(value = "{fromIndex}/order/{toIndex}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<List<Columns>> changeColumnOrder(@PathVariable("fromIndex") Integer fromIndex,
+                                                      @PathVariable("toIndex") Integer toIndex,
+                                                      @PathVariable("boardId") Long boardId) {
+        HttpHeaders headers = new HttpHeaders();
+
+        if (fromIndex != toIndex){
+            Columns column = this.columnService.getByOrder(boardId, fromIndex);
+
+            if (column == null) {
+                return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            }
+
+            this.columnService.changeColumnOrder(column, fromIndex, toIndex, columnService.getAll(boardId));
+        }
+
+        List<Columns> columns = columnService.getAll(boardId);
+
+        return new ResponseEntity<>(columns, headers, HttpStatus.OK);
     }
 
     @DeleteMapping(value = "{id}", produces = MediaType.APPLICATION_JSON_VALUE)

@@ -14,9 +14,9 @@ public interface TaskService {
 
     List<Task> getAll(Long columnId);
 
-    void changeTaskOrder(Task task, Integer index, List<Task> tasks);
+    void changeTaskOrder(Task task, Integer FromIndex, Integer toIndex, List<Task> tasks);
 
-    Task getByOrder(Long columnId, Long id);
+    Task getByOrder(Long columnId, Integer id);
 
-    Long getMaxOrderValue(Long columnId);
+    Integer getMaxOrderValue(Long columnId);
 }

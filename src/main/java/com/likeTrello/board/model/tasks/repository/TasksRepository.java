@@ -12,9 +12,9 @@ public interface TasksRepository extends JpaRepository<Task, Long> {
     List<Task> findAll(Long columnId);
 
     @Query("from Task where columns.id = ?1 and taskOrder = ?2")
-    Task getByOrder(Long columnId, Long id);
+    Task getByOrder(Long columnId, Integer id);
 
     @Query("select max(taskOrder) from Task where columns.id = ?1")
-    Long getMaxOrderValue(Long columnId);
+    Integer getMaxOrderValue(Long columnId);
 
 }
