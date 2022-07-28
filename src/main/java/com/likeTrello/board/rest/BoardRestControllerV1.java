@@ -2,13 +2,15 @@ package com.likeTrello.board.rest;
 
 import com.likeTrello.board.model.Board;
 import com.likeTrello.board.service.BoardService;
+import com.likeTrello.exceptions.BoardNotFoundException;
+import com.likeTrello.exceptions.InvalidParameterException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -19,65 +21,37 @@ public class BoardRestControllerV1 {
     private BoardService boardService;
 
     @RequestMapping(produces = MediaType.APPLICATION_JSON_VALUE, method = RequestMethod.GET)
-    public ResponseEntity<List<Board>> getAllBoards(){
+    public ResponseEntity<List<Board>> getAllBoards() throws BoardNotFoundException {
         List<Board> boards = this.boardService.getAll();
-
-        if (boards.isEmpty()){
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
 
         return new ResponseEntity<>(boards, HttpStatus.OK);
     }
 
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Board> getBoard(@PathVariable Long id){
-        if (id == null){
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
-
+    public ResponseEntity<Board> getBoard(@PathVariable Long id) throws InvalidParameterException {
         Board board = this.boardService.getById(id);
-
-        if (board == null){
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
 
         return new ResponseEntity<>(board, HttpStatus.OK);
     }
 
     @PostMapping(value = "/new", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Board> saveBoard(@RequestBody Board board){
-        HttpHeaders headers = new HttpHeaders();
-
-        if (board == null){
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
-
+    public ResponseEntity<Board> saveBoard(@RequestBody @Valid Board board) {
         this.boardService.save(board);
 
-        return new ResponseEntity<>(board, headers, HttpStatus.CREATED);
+        return new ResponseEntity<>(board, HttpStatus.CREATED);
     }
 
     @PutMapping(value = "{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Board> updateBoard(@RequestBody Board board){
-        HttpHeaders headers = new HttpHeaders();
-
-        if (board == null){
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
-
+    public ResponseEntity<Board> updateBoard(@RequestBody @Valid Board board) {
         this.boardService.save(board);
-        return new ResponseEntity<>(board, headers, HttpStatus.OK);
+
+        return new ResponseEntity<>(board, HttpStatus.OK);
     }
 
     @DeleteMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Board> deleteBoard(@PathVariable Long id){
-        Board board = this.boardService.getById(id);
-
-        if (board == null){
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-
+    public ResponseEntity<Board> deleteBoard(@PathVariable Long id) throws InvalidParameterException {
         this.boardService.delete(id);
+
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 

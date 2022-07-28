@@ -2,6 +2,8 @@ package com.likeTrello.board.model.tasks.service;
 
 import com.likeTrello.board.model.tasks.model.Task;
 import com.likeTrello.board.model.tasks.repository.TasksRepository;
+import com.likeTrello.exceptions.InvalidParameterException;
+import com.likeTrello.exceptions.TaskNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -10,26 +12,46 @@ import java.util.List;
 @Service
 public class TaskServiceImpl implements TaskService {
 
+
     @Autowired
     private TasksRepository tasksRepository;
 
     @Override
     public Task getById(Long id) {
+        if (tasksRepository.findById(id).isEmpty()) {
+            throw new InvalidParameterException("Invalid task id");
+        }
+
         return tasksRepository.findById(id).get();
     }
 
     @Override
-    public void save(Task task) {
+    public void save(Task task, Long columnId) {
+        Integer taskOrderId = getMaxOrderValue(columnId);
+
+        if (taskOrderId == null) {
+            task.setTaskOrder(1);
+        } else {
+            task.setTaskOrder(taskOrderId + 1);
+        }
+
         tasksRepository.save(task);
     }
 
     @Override
     public void delete(Long id) {
-        tasksRepository.deleteById(id);
+        if (tasksRepository.findById(id).isEmpty()) {
+            throw new InvalidParameterException("Invalid task id");
+        } else {
+            tasksRepository.deleteById(id);
+        }
     }
 
     @Override
     public List<Task> getAll(Long columnId) {
+        if (tasksRepository.findAll(columnId).isEmpty()) {
+            throw new TaskNotFoundException("No tasks exist");
+        }
         return tasksRepository.findAll(columnId);
     }
 

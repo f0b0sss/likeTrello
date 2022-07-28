@@ -5,6 +5,9 @@ import com.likeTrello.board.model.colums.model.Columns;
 import lombok.Data;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.util.List;
 
 @Entity
@@ -17,6 +20,9 @@ public class Board {
     private Long id;
 
     @Column(name = "board_name")
+    @NotNull
+    @NotBlank(message = "Board name can't be blank")
+    @Size(min = 4, max = 255, message = "Board name must be min 4, max 255 symbols")
     private String boardName;
 
     @JsonManagedReference

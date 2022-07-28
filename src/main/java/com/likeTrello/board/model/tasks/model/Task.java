@@ -6,6 +6,9 @@ import lombok.Data;
 import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.time.LocalDate;
 
 @Entity
@@ -21,6 +24,9 @@ public class Task {
     private Integer taskOrder;
 
     @Column(name = "task_name")
+    @NotNull
+    @NotBlank(message = "Task name can't be blank")
+    @Size(min = 4, max = 255, message = "Task name must be min 4, max 255 symbols")
     private String taskName;
 
     @Column(name = "description")

@@ -8,7 +8,7 @@ public interface ColumnService {
 
     Columns getById(Long id);
 
-    void save(Columns columns);
+    void save(Columns columns, Long boardId);
 
     void delete(Long id);
 

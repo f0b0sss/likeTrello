@@ -7,6 +7,9 @@ import com.likeTrello.board.model.tasks.model.Task;
 import lombok.Data;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.util.List;
 
 @Entity
@@ -18,6 +21,9 @@ public class Columns {
     private Long id;
 
     @Column(name = "column_name")
+    @NotNull
+    @NotBlank(message = "Column name can't be blank")
+    @Size(min = 4, max = 255, message = "Column name must be min 4, max 255 symbols")
     private String columnName;
 
     @Column(name = "column_order")

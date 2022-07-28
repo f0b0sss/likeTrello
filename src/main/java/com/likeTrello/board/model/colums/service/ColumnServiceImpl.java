@@ -2,6 +2,8 @@ package com.likeTrello.board.model.colums.service;
 
 import com.likeTrello.board.model.colums.model.Columns;
 import com.likeTrello.board.model.colums.repository.ColumnsRepository;
+import com.likeTrello.exceptions.ColumnNotFoundException;
+import com.likeTrello.exceptions.InvalidParameterException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -15,21 +17,41 @@ public class ColumnServiceImpl implements ColumnService {
 
     @Override
     public Columns getById(Long id) {
+        if (columnsRepository.findById(id).isEmpty()) {
+            throw new InvalidParameterException("Invalid column id");
+        }
+
         return columnsRepository.findById(id).get();
     }
 
     @Override
-    public void save(Columns columns) {
-        columnsRepository.save(columns);
+    public void save(Columns column, Long boardId) {
+        Integer columnOrderId = getMaxOrderValue(boardId);
+
+        if (columnOrderId == null){
+            column.setColumnOrder(1);
+        }else {
+            column.setColumnOrder(columnOrderId + 1);
+        }
+
+        columnsRepository.save(column);
     }
 
     @Override
     public void delete(Long id) {
-        columnsRepository.deleteById(id);
+        if (columnsRepository.findById(id).isEmpty()) {
+            throw new InvalidParameterException("Invalid column id");
+        } else {
+            columnsRepository.deleteById(id);
+        }
     }
 
     @Override
     public List<Columns> getAll(Long boardId) {
+        if (columnsRepository.findAll(boardId).isEmpty()) {
+            throw new ColumnNotFoundException("No columns exist");
+        }
+
         return columnsRepository.findAll(boardId);
     }
 
