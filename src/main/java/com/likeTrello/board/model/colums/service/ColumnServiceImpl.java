@@ -1,9 +1,11 @@
 package com.likeTrello.board.model.colums.service;
 
+import com.likeTrello.board.model.Board;
 import com.likeTrello.board.model.colums.model.Columns;
 import com.likeTrello.board.model.colums.repository.ColumnsRepository;
+import com.likeTrello.board.service.BoardService;
 import com.likeTrello.exceptions.ColumnNotFoundException;
-import com.likeTrello.exceptions.InvalidParameterException;
+import com.likeTrello.exceptions.IncorrectParameterException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -15,10 +17,13 @@ public class ColumnServiceImpl implements ColumnService {
     @Autowired
     private ColumnsRepository columnsRepository;
 
+    @Autowired
+    private BoardService boardService;
+
     @Override
     public Columns getById(Long id) {
         if (columnsRepository.findById(id).isEmpty()) {
-            throw new InvalidParameterException("Invalid column id");
+            throw new IncorrectParameterException("Incorrect column id");
         }
 
         return columnsRepository.findById(id).get();
@@ -26,6 +31,10 @@ public class ColumnServiceImpl implements ColumnService {
 
     @Override
     public void save(Columns column, Long boardId) {
+        Board board = boardService.getById(boardId);
+
+        column.setBoard(board);
+
         Integer columnOrderId = getMaxOrderValue(boardId);
 
         if (columnOrderId == null){
@@ -40,7 +49,7 @@ public class ColumnServiceImpl implements ColumnService {
     @Override
     public void delete(Long id) {
         if (columnsRepository.findById(id).isEmpty()) {
-            throw new InvalidParameterException("Invalid column id");
+            throw new IncorrectParameterException("Incorrect column id");
         } else {
             columnsRepository.deleteById(id);
         }

@@ -3,7 +3,7 @@ package com.likeTrello.board.rest;
 import com.likeTrello.board.model.Board;
 import com.likeTrello.board.service.BoardService;
 import com.likeTrello.exceptions.BoardNotFoundException;
-import com.likeTrello.exceptions.InvalidParameterException;
+import com.likeTrello.exceptions.IncorrectParameterException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -28,7 +28,7 @@ public class BoardRestControllerV1 {
     }
 
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Board> getBoard(@PathVariable Long id) throws InvalidParameterException {
+    public ResponseEntity<Board> getBoard(@PathVariable Long id) throws IncorrectParameterException {
         Board board = this.boardService.getById(id);
 
         return new ResponseEntity<>(board, HttpStatus.OK);
@@ -49,7 +49,7 @@ public class BoardRestControllerV1 {
     }
 
     @DeleteMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Board> deleteBoard(@PathVariable Long id) throws InvalidParameterException {
+    public ResponseEntity<Board> deleteBoard(@PathVariable Long id) throws IncorrectParameterException {
         this.boardService.delete(id);
 
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);

@@ -4,8 +4,10 @@ import com.likeTrello.board.model.colums.model.Columns;
 import com.likeTrello.board.model.colums.service.ColumnService;
 import com.likeTrello.board.model.tasks.model.Task;
 import com.likeTrello.board.model.tasks.service.TaskService;
-import com.likeTrello.exceptions.InvalidParameterException;
+import com.likeTrello.exceptions.IncorrectParameterException;
 import com.likeTrello.exceptions.TaskNotFoundException;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -17,6 +19,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/board/{boardId}/column/{columnId}/task")
+@Api(value = "Task Controller")
 public class TaskRestControllerV1 {
 
     @Autowired
@@ -25,6 +28,7 @@ public class TaskRestControllerV1 {
     private ColumnService columnService;
 
     @RequestMapping(produces = MediaType.APPLICATION_JSON_VALUE, method = RequestMethod.GET)
+    @ApiOperation("Get list of all tasks by column id")
     public ResponseEntity<List<Task>> getAllTasks(@PathVariable("columnId") Long columnId) throws TaskNotFoundException {
         List<Task> tasks = this.taskService.getAll(columnId);
 
@@ -32,7 +36,7 @@ public class TaskRestControllerV1 {
     }
 
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Task> getTask(@PathVariable("id") Long id) throws InvalidParameterException {
+    public ResponseEntity<Task> getTask(@PathVariable("id") Long id) throws IncorrectParameterException {
         Task task = this.taskService.getById(id);
 
         return new ResponseEntity<>(task, HttpStatus.OK);
@@ -41,10 +45,6 @@ public class TaskRestControllerV1 {
     @PostMapping(value = "/new", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Task> saveTask(@RequestBody @Valid Task task,
                                          @PathVariable("columnId") Long columnId) {
-        Columns columns = this.columnService.getById(columnId);
-
-        task.setColumns(columns);
-
         this.taskService.save(task, columnId);
 
         return new ResponseEntity<>(task, HttpStatus.CREATED);
@@ -52,10 +52,6 @@ public class TaskRestControllerV1 {
 
     @PutMapping(value = "{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Task> updateTask(@RequestBody @Valid Task task, @PathVariable Long columnId) {
-        Columns columns = this.columnService.getById(columnId);
-
-        task.setColumns(columns);
-
         this.taskService.save(task, columnId);
 
         return new ResponseEntity<>(task, HttpStatus.OK);
@@ -89,7 +85,7 @@ public class TaskRestControllerV1 {
     }
 
     @DeleteMapping(value = "{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Task> deleteTask(@PathVariable("id") Long id) throws InvalidParameterException {
+    public ResponseEntity<Task> deleteTask(@PathVariable("id") Long id) throws IncorrectParameterException {
         this.taskService.delete(id);
 
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);

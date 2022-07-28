@@ -2,7 +2,7 @@ package com.likeTrello.exceptions.handler;
 
 import com.likeTrello.exceptions.BoardNotFoundException;
 import com.likeTrello.exceptions.ColumnNotFoundException;
-import com.likeTrello.exceptions.InvalidParameterException;
+import com.likeTrello.exceptions.IncorrectParameterException;
 import com.likeTrello.exceptions.TaskNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,8 +16,8 @@ import java.util.Map;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-    @ExceptionHandler(value = InvalidParameterException.class)
-    public ResponseEntity invalidParameterException(InvalidParameterException e) {
+    @ExceptionHandler(value = IncorrectParameterException.class)
+    public ResponseEntity invalidParameterException(IncorrectParameterException e) {
         return new ResponseEntity(e.getMessage(), HttpStatus.BAD_REQUEST);
     }
 

@@ -1,8 +1,10 @@
 package com.likeTrello.board.model.tasks.service;
 
+import com.likeTrello.board.model.colums.model.Columns;
+import com.likeTrello.board.model.colums.service.ColumnService;
 import com.likeTrello.board.model.tasks.model.Task;
 import com.likeTrello.board.model.tasks.repository.TasksRepository;
-import com.likeTrello.exceptions.InvalidParameterException;
+import com.likeTrello.exceptions.IncorrectParameterException;
 import com.likeTrello.exceptions.TaskNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -16,10 +18,13 @@ public class TaskServiceImpl implements TaskService {
     @Autowired
     private TasksRepository tasksRepository;
 
+    @Autowired
+    private ColumnService columnService;
+
     @Override
     public Task getById(Long id) {
         if (tasksRepository.findById(id).isEmpty()) {
-            throw new InvalidParameterException("Invalid task id");
+            throw new IncorrectParameterException("Incorrect task id");
         }
 
         return tasksRepository.findById(id).get();
@@ -27,6 +32,10 @@ public class TaskServiceImpl implements TaskService {
 
     @Override
     public void save(Task task, Long columnId) {
+        Columns columns = this.columnService.getById(columnId);
+
+        task.setColumns(columns);
+
         Integer taskOrderId = getMaxOrderValue(columnId);
 
         if (taskOrderId == null) {
@@ -41,7 +50,7 @@ public class TaskServiceImpl implements TaskService {
     @Override
     public void delete(Long id) {
         if (tasksRepository.findById(id).isEmpty()) {
-            throw new InvalidParameterException("Invalid task id");
+            throw new IncorrectParameterException("Incorrect task id");
         } else {
             tasksRepository.deleteById(id);
         }

@@ -3,7 +3,7 @@ package com.likeTrello.board.service;
 import com.likeTrello.board.model.Board;
 import com.likeTrello.board.repository.BoardRepository;
 import com.likeTrello.exceptions.BoardNotFoundException;
-import com.likeTrello.exceptions.InvalidParameterException;
+import com.likeTrello.exceptions.IncorrectParameterException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -18,7 +18,7 @@ public class BoardServiceImpl implements BoardService {
     @Override
     public Board getById(Long id) {
         if (boardRepository.findById(id).isEmpty()) {
-            throw new InvalidParameterException("Invalid board id");
+            throw new IncorrectParameterException("Incorrect board id");
         }
 
         return boardRepository.findById(id).get();
@@ -32,7 +32,7 @@ public class BoardServiceImpl implements BoardService {
     @Override
     public void delete(Long id) {
         if (boardRepository.findById(id).isEmpty()) {
-            throw new InvalidParameterException("Invalid board id");
+            throw new IncorrectParameterException("Incorrect board id");
         } else {
             boardRepository.deleteById(id);
         }

@@ -1,11 +1,10 @@
 package com.likeTrello.board.model.colums.rest;
 
-import com.likeTrello.board.model.Board;
 import com.likeTrello.board.model.colums.model.Columns;
 import com.likeTrello.board.model.colums.service.ColumnService;
 import com.likeTrello.board.service.BoardService;
 import com.likeTrello.exceptions.ColumnNotFoundException;
-import com.likeTrello.exceptions.InvalidParameterException;
+import com.likeTrello.exceptions.IncorrectParameterException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -33,7 +32,7 @@ public class ColumnsRestControllerV1 {
     }
 
     @GetMapping(value = "{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Columns> getColumn(@PathVariable Long id) throws InvalidParameterException {
+    public ResponseEntity<Columns> getColumn(@PathVariable Long id) throws IncorrectParameterException {
         Columns column = this.columnService.getById(id);
 
         return new ResponseEntity<>(column, HttpStatus.OK);
@@ -41,10 +40,6 @@ public class ColumnsRestControllerV1 {
 
     @PostMapping(value = "/new", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Columns> saveColumn(@RequestBody @Valid Columns column, @PathVariable Long boardId){
-        Board board = boardService.getById(boardId);
-
-        column.setBoard(board);
-
         this.columnService.save(column, boardId);
 
         return new ResponseEntity<>(column, HttpStatus.CREATED);
@@ -52,10 +47,6 @@ public class ColumnsRestControllerV1 {
 
     @PutMapping(value = "{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Columns> updateColumn(@RequestBody @Valid Columns column, @PathVariable Long boardId){
-        Board board = this.boardService.getById(boardId);
-
-        column.setBoard(board);
-
         this.columnService.save(column, boardId);
 
         return new ResponseEntity<>(column, HttpStatus.OK);
@@ -77,7 +68,7 @@ public class ColumnsRestControllerV1 {
     }
 
     @DeleteMapping(value = "{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Columns> deleteColumn(@PathVariable("id") Long id) throws InvalidParameterException{
+    public ResponseEntity<Columns> deleteColumn(@PathVariable("id") Long id) throws IncorrectParameterException {
         this.columnService.delete(id);
 
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
