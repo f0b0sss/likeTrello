@@ -6,8 +6,6 @@ import com.likeTrello.board.model.tasks.model.Task;
 import com.likeTrello.board.model.tasks.service.TaskService;
 import com.likeTrello.exceptions.IncorrectParameterException;
 import com.likeTrello.exceptions.TaskNotFoundException;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -19,7 +17,6 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/board/{boardId}/column/{columnId}/task")
-@Api(value = "Task Controller")
 public class TaskRestControllerV1 {
 
     @Autowired
@@ -28,7 +25,6 @@ public class TaskRestControllerV1 {
     private ColumnService columnService;
 
     @RequestMapping(produces = MediaType.APPLICATION_JSON_VALUE, method = RequestMethod.GET)
-    @ApiOperation("Get list of all tasks by column id")
     public ResponseEntity<List<Task>> getAllTasks(@PathVariable("columnId") Long columnId) throws TaskNotFoundException {
         List<Task> tasks = this.taskService.getAll(columnId);
 

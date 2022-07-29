@@ -10,4 +10,5 @@ public class SpringConfig {
     HiddenHttpMethodFilter hiddenHttpMethodFilter() {
         return new HiddenHttpMethodFilter();
     }
+
 }
