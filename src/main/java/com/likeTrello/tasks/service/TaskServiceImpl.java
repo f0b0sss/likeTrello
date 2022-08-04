@@ -45,7 +45,7 @@ public class TaskServiceImpl implements TaskService {
 
     @Override
     public void delete(Long id) {
-        if (!tasksRepository.existsById(id) || id == null) {
+        if (!tasksRepository.existsById(id)) {
             throw new TaskNotFoundException("Column with id " + id + " not found");
         }
         tasksRepository.deleteById(id);

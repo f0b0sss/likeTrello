@@ -27,7 +27,7 @@ public class BoardServiceImpl implements BoardService {
 
     @Override
     public void delete(Long id) {
-        if (!boardRepository.existsById(id) || id == null) {
+        if (!boardRepository.existsById(id)) {
             throw new BoardNotFoundException("Board with id " + id + " not found");
         }
         boardRepository.deleteById(id);

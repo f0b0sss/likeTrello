@@ -44,7 +44,7 @@ public class ColumnServiceImpl implements ColumnService {
 
     @Override
     public void delete(Long id) {
-        if (!columnsRepository.existsById(id) || id == null) {
+        if (!columnsRepository.existsById(id)) {
             throw new ColumnNotFoundException("Column with id " + id + " not found");
         }
         columnsRepository.deleteById(id);

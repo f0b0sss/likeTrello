@@ -120,16 +120,6 @@ class ColumnServiceImplTest {
     }
 
     @Test
-    void delete_throwColumnNotFoundException_whenIdNull() {
-        assertThrows(ColumnNotFoundException.class, new Executable() {
-            @Override
-            public void execute() throws Throwable {
-                columnService.delete(null);
-            }
-        });
-    }
-
-    @Test
     void deleteTask() {
         int size = columnService.getAll(1l).size();
 

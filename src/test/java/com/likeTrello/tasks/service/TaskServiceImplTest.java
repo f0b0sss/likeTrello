@@ -121,16 +121,6 @@ class TaskServiceImplTest {
     }
 
     @Test
-    void delete_throwInvalidParameterException_whenIdNull() {
-        assertThrows(TaskNotFoundException.class, new Executable() {
-            @Override
-            public void execute() throws Throwable {
-                taskService.delete(null);
-            }
-        });
-    }
-
-    @Test
     void deleteTask() {
         int size = taskService.getAll(1l).size();
 
