@@ -1,6 +1,6 @@
-package com.likeTrello.board.model.colums.repository;
+package com.likeTrello.colums.repository;
 
-import com.likeTrello.board.model.colums.model.Columns;
+import com.likeTrello.colums.model.Columns;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 

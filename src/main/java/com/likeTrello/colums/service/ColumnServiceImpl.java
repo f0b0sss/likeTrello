@@ -1,11 +1,10 @@
-package com.likeTrello.board.model.colums.service;
+package com.likeTrello.colums.service;
 
 import com.likeTrello.board.model.Board;
-import com.likeTrello.board.model.colums.model.Columns;
-import com.likeTrello.board.model.colums.repository.ColumnsRepository;
 import com.likeTrello.board.service.BoardService;
+import com.likeTrello.colums.model.Columns;
+import com.likeTrello.colums.repository.ColumnsRepository;
 import com.likeTrello.exceptions.ColumnNotFoundException;
-import com.likeTrello.exceptions.IncorrectParameterException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -22,11 +21,8 @@ public class ColumnServiceImpl implements ColumnService {
 
     @Override
     public Columns getById(Long id) {
-        if (columnsRepository.findById(id).isEmpty()) {
-            throw new IncorrectParameterException("Incorrect column id");
-        }
-
-        return columnsRepository.findById(id).get();
+        return columnsRepository.findById(id).orElseThrow(
+                () -> new ColumnNotFoundException("Column with id " + id + " not found"));
     }
 
     @Override
@@ -48,19 +44,14 @@ public class ColumnServiceImpl implements ColumnService {
 
     @Override
     public void delete(Long id) {
-        if (columnsRepository.findById(id).isEmpty()) {
-            throw new IncorrectParameterException("Incorrect column id");
-        } else {
-            columnsRepository.deleteById(id);
+        if (!columnsRepository.existsById(id) || id == null) {
+            throw new ColumnNotFoundException("Column with id " + id + " not found");
         }
+        columnsRepository.deleteById(id);
     }
 
     @Override
     public List<Columns> getAll(Long boardId) {
-        if (columnsRepository.findAll(boardId).isEmpty()) {
-            throw new ColumnNotFoundException("No columns exist");
-        }
-
         return columnsRepository.findAll(boardId);
     }
 

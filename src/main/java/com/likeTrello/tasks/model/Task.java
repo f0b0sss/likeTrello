@@ -1,7 +1,7 @@
-package com.likeTrello.board.model.tasks.model;
+package com.likeTrello.tasks.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.likeTrello.board.model.colums.model.Columns;
+import com.likeTrello.colums.model.Columns;
 import lombok.Data;
 import org.hibernate.annotations.CreationTimestamp;
 

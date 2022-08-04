@@ -1,9 +1,8 @@
-package com.likeTrello.board.model.colums.service;
+package com.likeTrello.colums.service;
 
-import com.likeTrello.board.model.colums.model.Columns;
-import com.likeTrello.board.model.colums.repository.ColumnsRepository;
+import com.likeTrello.colums.model.Columns;
+import com.likeTrello.colums.repository.ColumnsRepository;
 import com.likeTrello.exceptions.ColumnNotFoundException;
-import com.likeTrello.exceptions.IncorrectParameterException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.function.Executable;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,8 +27,8 @@ class ColumnServiceImplTest {
     ColumnsRepository columnsRepository;
 
     @Test
-    void getById_throwInvalidParameterException_whenIncorrectId() {
-        assertThrows(IncorrectParameterException.class, new Executable() {
+    void getById_throwColumnNotFoundException_whenIncorrectId() {
+        assertThrows(ColumnNotFoundException.class, new Executable() {
             @Override
             public void execute() throws Throwable {
                 columnService.getById(10l);
@@ -111,11 +110,21 @@ class ColumnServiceImplTest {
     }
 
     @Test
-    void delete_throwInvalidParameterException_whenIncorrectId() {
-        assertThrows(IncorrectParameterException.class, new Executable() {
+    void delete_throwColumnNotFoundException_whenIncorrectId() {
+        assertThrows(ColumnNotFoundException.class, new Executable() {
             @Override
             public void execute() throws Throwable {
                 columnService.delete(10l);
+            }
+        });
+    }
+
+    @Test
+    void delete_throwColumnNotFoundException_whenIdNull() {
+        assertThrows(ColumnNotFoundException.class, new Executable() {
+            @Override
+            public void execute() throws Throwable {
+                columnService.delete(null);
             }
         });
     }
@@ -140,16 +149,6 @@ class ColumnServiceImplTest {
         int sizeNew = columnService.getAll(1l).get(0).getTasks().size();
 
         assertEquals(0, sizeNew);
-    }
-
-    @Test
-    void getAll_throwColumnNotFoundException_noOneColumnCreated() {
-        assertThrows(ColumnNotFoundException.class, new Executable() {
-            @Override
-            public void execute() throws Throwable {
-                columnService.getAll(2l);
-            }
-        });
     }
 
     @Test

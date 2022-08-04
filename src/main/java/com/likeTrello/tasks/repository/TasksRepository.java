@@ -1,6 +1,6 @@
-package com.likeTrello.board.model.tasks.repository;
+package com.likeTrello.tasks.repository;
 
-import com.likeTrello.board.model.tasks.model.Task;
+import com.likeTrello.tasks.model.Task;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 

@@ -1,11 +1,10 @@
-package com.likeTrello.board.model.tasks.service;
+package com.likeTrello.tasks.service;
 
-import com.likeTrello.board.model.colums.model.Columns;
-import com.likeTrello.board.model.colums.service.ColumnService;
-import com.likeTrello.board.model.tasks.model.Task;
-import com.likeTrello.board.model.tasks.repository.TasksRepository;
-import com.likeTrello.exceptions.IncorrectParameterException;
+import com.likeTrello.colums.model.Columns;
+import com.likeTrello.colums.service.ColumnService;
 import com.likeTrello.exceptions.TaskNotFoundException;
+import com.likeTrello.tasks.model.Task;
+import com.likeTrello.tasks.repository.TasksRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -23,11 +22,8 @@ public class TaskServiceImpl implements TaskService {
 
     @Override
     public Task getById(Long id) {
-        if (tasksRepository.findById(id).isEmpty()) {
-            throw new IncorrectParameterException("Incorrect task id");
-        }
-
-        return tasksRepository.findById(id).get();
+        return tasksRepository.findById(id).orElseThrow(
+                () -> new TaskNotFoundException("Task with id " + id + " not found"));
     }
 
     @Override
@@ -49,18 +45,14 @@ public class TaskServiceImpl implements TaskService {
 
     @Override
     public void delete(Long id) {
-        if (tasksRepository.findById(id).isEmpty()) {
-            throw new IncorrectParameterException("Incorrect task id");
-        } else {
-            tasksRepository.deleteById(id);
+        if (!tasksRepository.existsById(id) || id == null) {
+            throw new TaskNotFoundException("Column with id " + id + " not found");
         }
+        tasksRepository.deleteById(id);
     }
 
     @Override
     public List<Task> getAll(Long columnId) {
-        if (tasksRepository.findAll(columnId).isEmpty()) {
-            throw new TaskNotFoundException("No tasks exist");
-        }
         return tasksRepository.findAll(columnId);
     }
 

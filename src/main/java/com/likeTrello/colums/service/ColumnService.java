@@ -1,6 +1,6 @@
-package com.likeTrello.board.model.colums.service;
+package com.likeTrello.colums.service;
 
-import com.likeTrello.board.model.colums.model.Columns;
+import com.likeTrello.colums.model.Columns;
 
 import java.util.List;
 

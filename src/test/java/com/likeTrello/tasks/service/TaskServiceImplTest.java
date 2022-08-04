@@ -1,9 +1,8 @@
-package com.likeTrello.board.model.tasks.service;
+package com.likeTrello.tasks.service;
 
-import com.likeTrello.board.model.tasks.model.Task;
-import com.likeTrello.board.model.tasks.repository.TasksRepository;
-import com.likeTrello.exceptions.IncorrectParameterException;
 import com.likeTrello.exceptions.TaskNotFoundException;
+import com.likeTrello.tasks.model.Task;
+import com.likeTrello.tasks.repository.TasksRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.function.Executable;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,8 +28,8 @@ class TaskServiceImplTest {
     TasksRepository tasksRepository;
 
     @Test
-    void getById_throwInvalidParameterException_whenIncorrectId() {
-        assertThrows(IncorrectParameterException.class, new Executable() {
+    void getById_throwTaskNotFoundException_whenIncorrectId() {
+        assertThrows(TaskNotFoundException.class, new Executable() {
             @Override
             public void execute() throws Throwable {
                 taskService.getById(10l);
@@ -113,10 +112,20 @@ class TaskServiceImplTest {
 
     @Test
     void delete_throwInvalidParameterException_whenIncorrectId() {
-        assertThrows(IncorrectParameterException.class, new Executable() {
+        assertThrows(TaskNotFoundException.class, new Executable() {
             @Override
             public void execute() throws Throwable {
                 taskService.delete(10l);
+            }
+        });
+    }
+
+    @Test
+    void delete_throwInvalidParameterException_whenIdNull() {
+        assertThrows(TaskNotFoundException.class, new Executable() {
+            @Override
+            public void execute() throws Throwable {
+                taskService.delete(null);
             }
         });
     }
@@ -128,16 +137,6 @@ class TaskServiceImplTest {
         taskService.delete(1l);
 
         assertEquals(size - 1, taskService.getAll(1l).size());
-    }
-
-    @Test
-    void getAll_throwTaskNotFoundException_noOneTaskCreated() {
-        assertThrows(TaskNotFoundException.class, new Executable() {
-            @Override
-            public void execute() throws Throwable {
-                taskService.getAll(2l);
-            }
-        });
     }
 
     @Test

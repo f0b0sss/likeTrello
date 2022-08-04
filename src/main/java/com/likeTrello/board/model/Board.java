@@ -1,7 +1,7 @@
 package com.likeTrello.board.model;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
-import com.likeTrello.board.model.colums.model.Columns;
+import com.likeTrello.colums.model.Columns;
 import lombok.Data;
 
 import javax.persistence.*;
