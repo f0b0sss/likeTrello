@@ -18,3 +18,5 @@ public interface TasksRepository extends JpaRepository<Task, Long> {
     Integer getMaxOrderValue(Long columnId);
 
 }
+
+

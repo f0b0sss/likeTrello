@@ -33,9 +33,9 @@ public class ColumnServiceImpl implements ColumnService {
 
         Integer columnOrderId = getMaxOrderValue(boardId);
 
-        if (columnOrderId == null){
+        if (columnOrderId == null) {
             column.setColumnOrder(1);
-        }else {
+        } else {
             column.setColumnOrder(columnOrderId + 1);
         }
 
@@ -141,5 +141,29 @@ public class ColumnServiceImpl implements ColumnService {
     @Override
     public Integer getMaxOrderValue(Long boardId) {
         return columnsRepository.getMaxOrderValue(boardId);
+    }
+}
+
+interface EqualNumbers {
+    int getHighNumber(int a, int b);
+}
+
+class EqualOperation {
+    public static void main(String[] args) {
+
+        EqualNumbers equalNumbers;
+
+        equalNumbers = (a, b) -> {
+            int result = 1;
+
+            for (int i = 1; i <= b; i++) {
+                result = result * a;
+            }
+
+            return result;
+
+        };
+
+        System.out.println(equalNumbers.getHighNumber(2, 9));
     }
 }
